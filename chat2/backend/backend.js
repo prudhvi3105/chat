@@ -4,7 +4,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser';
 
 const openai = new openAI({
-  apiKey: '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',
+  apiKey: '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',
 });
 
 const app = express();
@@ -25,20 +25,31 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.listen(port, ()=>{
-    console.log("Server is started");
+    console.log("Server is started",port);
 });
 
 async function getAnswer(question) {
+  console.log(question);
     var chat = await openai.chat.completions.create({
-        messages: [
-            { role: "user", content: 'Hi im prudhvi' },
-            { role: "assistant", content: 'Hey Prudhvi, How can I help you ?'},
-            { role: "user", content: 'for every message address me with my name'},
-            { role: "assistant", content: 'Sure Prudhvi'},
-            { role: "user", content: `<${question}>` }
-        ],
-        model: "gpt-3.5-turbo"
-    });
-  console.log(chat.choices[0].message.content)
+      model: "ft:gpt-3.5-turbo-1106:personal:travel-gpt:95dtfUqE",
+  messages: [
+    {
+      "role": "system",
+      "content": "you are a helpful travel assistant and you are helping a user plan a trip.You don't know about other things except travel.split the data datewise"
+    },
+    {
+      "role": "user",
+      "content": `<${question}>` 
+    }
+  ],
+  temperature: 1,
+  max_tokens: 256,
+  top_p: 1,
+  frequency_penalty: 0,
+  presence_penalty: 0,
+});
+
+      console.log(chat.choices[0].message.content);
+
   return chat;
   }
